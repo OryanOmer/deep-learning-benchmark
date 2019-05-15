@@ -2,7 +2,7 @@
 
 Performance of popular deep learning frameworks and GPUs are compared, including the effect of adjusting the floating point precision (the new Volta architecture allows performance boost by utilizing half/mixed-precision calculations.)
 
-The metric with measure is latency of running genral algoritems via diffrent precisions and framework.
+The measure metric is latency of running general algoritems via diffrent precisions and framework.
 
 The Result will be csv file with the following fields:
 * Timestamp
@@ -52,18 +52,6 @@ Except where noted.
 * Resnet152
 * Densenet161
 * Any others you might be interested in?
-
-### Benchmark Results
-
-
-### Comparison Graphs
-
-Comparison of Titan V vs 1080 Ti, PyTorch 0.3.0 vs Tensorflow 1.4.0 vs Caffe2 0.8.1, and FP32 vs FP16 in terms of images processed per second:
-
-![vgg16-eval](https://raw.githubusercontent.com/u39kun/deep-learning-benchmark/master/results/vgg16-eval.png)
-![vgg16-train](https://raw.githubusercontent.com/u39kun/deep-learning-benchmark/master/results/vgg16-train.png)
-![resnet152-eval](https://raw.githubusercontent.com/u39kun/deep-learning-benchmark/master/results/resnet152-eval.png)
-![resnet152-train](https://raw.githubusercontent.com/u39kun/deep-learning-benchmark/master/results/resnet152-train.png)
 
 # Contributors
 
