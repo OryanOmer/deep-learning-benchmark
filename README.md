@@ -12,9 +12,27 @@ The Result will be csv file with the following fields:
 * Precision
 * Result in mileseconds
 
-For running the benchmark press the command:
+For running the benchmark press the command with your customize params:
 ``` bash
-   python3 benchmarkGPU-warpper.py
+   python3 benchmarkGPU-warpper.py -h
+   usage: benchmarkGPU-warpper.py [-h] [--log_path LOG_PATH]
+                               [--repo_path REPO_PATH]
+                               [--result_path RESULT_PATH]
+                               [--repo_url REPO_URL]
+
+   Benchmark GPUs Capabilities
+
+   optional arguments:
+     -h, --help            show this help message and exit
+     --log_path LOG_PATH, -L LOG_PATH
+                           a path for logs outputs
+     --repo_path REPO_PATH, -R REPO_PATH
+                           path for repo clone
+     --result_path RESULT_PATH, -O RESULT_PATH
+                           Result path
+     --repo_url REPO_URL, -U REPO_URL
+                           url of the git(helps for private networks)
+
 ```
 
 ## About
