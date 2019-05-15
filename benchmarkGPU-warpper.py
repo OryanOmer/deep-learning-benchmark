@@ -1,5 +1,7 @@
 #!/usr/bin/python
 """
+Date: 15/15/2019
+WrittenBy: Oryan Omer
 Benchmark GPU Tool
 Output: csv table with the benchmark results
 
@@ -145,14 +147,14 @@ def runBench():
         result = "Pass"
         if result == "Pass":
                 print("Start Running benchmark")      
-                process = subprocess.getoutput('sudo python3 {repo_path}/benchmark.py {framework}'.format(repo_path=args.repo_path,framework=args.framework)) # Also gets you the stdout
+                process = subprocess.getoutput('sudo python3 {repo_path}/benchmark.py '.format(repo_path=args.repo_path)) # Also gets you the stdout
                 print("End Benchmark Process")      
 
                 output = process.split('\n')                
                 df = parseBenchOutput(output)
                 if os.path.exists('{result_path}/benchGPUResult.csv'.format(result_path=args.result_path)):
-                    os.remove('/tmp/benchGPUResult.csv')  
-                df.to_csv('~/benchGPUResult.csv')
+                    os.remove('/{result_path}/benchGPUResult.csv'.format(result_path=args.result_path))  
+                df.to_csv('{result_path}/benchGPUResult.csv'.format(result_path=args.result_path))
                 logger.info("Benchmark end")
         else:
                 logger.error("Failed prerequirements check")
@@ -172,15 +174,17 @@ def mainRunBenchmark():
 
 #main
 if __name__ == "__main__":
+    #Create Paraser
     parser = argparse.ArgumentParser(description='Benchmark GPUs Capabilities')
     parser.add_argument('--log_path', '-L', default="/tmp/Benchmark-gpu.log",help='a path for logs outputs',action="store")
     parser.add_argument('--repo_path','-R', default="/tmp/deep-learning-benchmark",help='path for repo clone',action="store")
     parser.add_argument('--result_path','-O', default="/tmp",help='Result path ',action="store")
     parser.add_argument('--repo_url', '-U', default="https://github.com/OryanOmer/deep-learning-benchmark.git",
     help='url of the git(helps for private networks)',action="store")
-    parser.add_argument('--framework', '-F', default="",
-    help='Framwork to run the tests',action="store")
     args = parser.parse_args()
+    
+    #Start Main
     logger = create_logger()
     result=mainRunBenchmark()
     print(result)
+
