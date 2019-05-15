@@ -1,7 +1,5 @@
 #!/usr/bin/python
 """
-Date: 15/05/2019
-WrittenBy: Oryan Omer
 Benchmark GPU Tool
 Output: csv table with the benchmark results
 
@@ -17,14 +15,11 @@ import functools
 import re
 import shutil
 import pandas as pd
+import argparse
 
 #global params
 images = ["pytorch","caffe2","cntk"]
 version=17.12
-internet_available=True
-repo_path = '/tmp/benachmark-gpu'
-log_path = "/tmp/Benchmark-gpu.log"
-repo_url = 'https://github.com/u39kun/deep-learning-benchmark.git'
 date = datetime.datetime.now().isoformat()
 
 #logger constructor
@@ -36,7 +31,7 @@ def create_logger():
     logger.setLevel(logging.INFO)
  
     # create the logging file handler
-    fh = logging.FileHandler(log_path)
+    fh = logging.FileHandler(args.log_path)
  
     fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     formatter = logging.Formatter(fmt)
@@ -85,7 +80,7 @@ def cloneGit(repo_url,repo_path):
         # Clone a repository
         if os.path.exists(repo_url):
               shutil.rmtree(repo_path)  
-        results=pygit2.clone_repository(repo_url, repo_path, bare=False, repository=None, remote=None, checkout_branch=None, callbacks=None)
+        results=pygit2.clone_repository(repo_url,repo_path, bare=False, repository=None, remote=None, checkout_branch=None, callbacks=None)
         return "Pass"
     except:
             logger.error("Error with git clone")
@@ -123,16 +118,11 @@ def parseBenchOutput(output):
         This function aims to parse the output from the benchmark script
         this function return DataFrame to work with.
         """
-        counter1 = 0
         parse_array = []
         data = []
-        while counter1 < len(output):
-                if "running benchmark for frameworks" in output[counter1]  :
-                        break
-                counter1 += 1
+        counter1 = [k for k,s in enumerate(output) if 'running benchmark for frameworks' in s][0]
         for i in range(counter1+3,len(output)):
                 parse_array.clear()
-                
                 parse_array = output[i].split(' ')
                 parse_array[0] = parse_array[0][:-2]
                 parse_array.pop(3)
@@ -141,7 +131,7 @@ def parseBenchOutput(output):
                 parse_string = " ".join(parse_array)
                 parse_string = date + " " + parse_string
                 data.append(parse_string)
-        df = pd.DataFrame(data=[row.split() for row in data],columns=['Timestamp','Framework','Algoritem','Bench','Precision','Result'])
+        df = pd.DataFrame(data=[row.split() for row in data],columns=['Timestamp','Framework','Algoritem','BenchStage','Precision','Result'])
         return df
         
 
@@ -154,11 +144,13 @@ def runBench():
        # result = ensurePreTestRequirements()
         result = "Pass"
         if result == "Pass":
-                        
-                process = subprocess.getoutput('sudo python3 /tmp/benachmark-gpu/benchmark.py') # Also gets you the stdout
+                print("Start Running benchmark")      
+                process = subprocess.getoutput('sudo python3 {repo_path}/benchmark.py {framework}'.format(repo_path=args.repo_path,framework=args.framework)) # Also gets you the stdout
+                print("End Benchmark Process")      
+
                 output = process.split('\n')                
                 df = parseBenchOutput(output)
-                if os.path.exists('/tmp/benchGPUResult.csv'):
+                if os.path.exists('{result_path}/benchGPUResult.csv'.format(result_path=args.result_path)):
                     os.remove('/tmp/benchGPUResult.csv')  
                 df.to_csv('~/benchGPUResult.csv')
                 logger.info("Benchmark end")
@@ -173,13 +165,22 @@ def mainRunBenchmark():
   """
   Main Function to manage the benchmark process
   """
-  #result = cloneGit(repo_url,repo_path)
+  #result = cloneGit(args.repo_url,args.repo_path)
   #result = getImages(images)
   result = runBench()
   return result
 
 #main
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Benchmark GPUs Capabilities')
+    parser.add_argument('--log_path', '-L', default="/tmp/Benchmark-gpu.log",help='a path for logs outputs',action="store")
+    parser.add_argument('--repo_path','-R', default="/tmp/deep-learning-benchmark",help='path for repo clone',action="store")
+    parser.add_argument('--result_path','-O', default="/tmp",help='Result path ',action="store")
+    parser.add_argument('--repo_url', '-U', default="https://github.com/OryanOmer/deep-learning-benchmark.git",
+    help='url of the git(helps for private networks)',action="store")
+    parser.add_argument('--framework', '-F', default="",
+    help='Framwork to run the tests',action="store")
+    args = parser.parse_args()
     logger = create_logger()
     result=mainRunBenchmark()
     print(result)

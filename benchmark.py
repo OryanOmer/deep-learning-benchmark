@@ -6,9 +6,9 @@ import pickle
 import numpy as np
 
 frameworks = [
-    'pytorch',
-    'tensorflow',
-    'caffe2'
+    'pytorch'
+#    'tensorflow',
+#    'caffe2'
 ]
 
 models = [
