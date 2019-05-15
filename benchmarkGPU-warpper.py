@@ -1,5 +1,7 @@
 #!/usr/bin/python
 """
+Date: 15/05/2019
+WrittenBy: Oryan Omer
 Benchmark GPU Tool
 Output: csv table with the benchmark results
 
